@@ -1,0 +1,16 @@
+{
+  "name": "padi-plates-agent",
+  "version": "1.0.0",
+  "description": "AI-powered agriculture agent for rice disease detection",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
