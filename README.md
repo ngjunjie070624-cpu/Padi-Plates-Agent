@@ -23,3 +23,4 @@ Padi-Plates Agent is an AI-driven tool designed to help Malaysian farmers identi
 - [cite_start]**AI Tooling:** Developed with assistance from Gemini for code optimization[cite: 22, 58].
 - [cite_start]**Safety:** Implements API key protection via environment variables.
 - 
+Security Note: This project uses environment variables for API safety. The GEMINI_API_KEY is managed via a .env file which is excluded from version control using .gitignore. Users must provide their own API key to run the diagnostic agent locally.
