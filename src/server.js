@@ -29,8 +29,11 @@ app.post("/api/diagnose", upload.single("padiImage"), async (req, res) => {
         // 使用 1.5 Flash 模型 (快速、多模态)
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const prompt = "You are an expert Malaysian agricultural scientist. Analyze this rice crop image. 1. Identify if there is a disease (e.g., Rice Blast, Bacterial Blight). 2. Provide a simple explanation. 3. Give localized treatment advice suitable for Malaysian farmers. Keep the tone helpful.";
-
+      const language = req.body.lang === 'ms' ? 'Bahasa Melayu' : 'English';
+const prompt = `You are a top Malaysian agricultural expert. Analyze this rice crop image and provide the report in ${language}. 
+1. Identify disease. 
+2. Give explanation. 
+3. Localized treatment advice for Malaysian farmers.`;
         const imagePart = {
             inlineData: {
                 data: req.file.buffer.toString("base64"),
