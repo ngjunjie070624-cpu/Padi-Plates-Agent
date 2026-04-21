@@ -3,69 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padi-Plates Agent - AI Agriculture Assistant</title>
+    <title>PadiGuard Pro | AI Agri-Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; background-color: #f4f7f6; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #2e7d32; text-align: center; }
-        .upload-section { border: 2px dashed #4caf50; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
-        button { background-color: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
-        button:hover { background-color: #45a049; }
-        #result { margin-top: 20px; padding: 15px; border-left: 5px solid #2e7d32; background: #e8f5e9; display: none; white-space: pre-wrap; }
-        .loading { display: none; text-align: center; color: #666; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); min-height: 100vh; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 2rem; }
+        .padi-gradient-text { background: linear-gradient(to right, #15803d, #166534); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>🌾 Padi-Plates Agent</h1>
-        <p style="text-align: center;">Upload a photo of your rice crop for instant AI diagnosis.</p>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
         
-        <div class="upload-section">
-            <input type="file" id="imageInput" accept="image/*">
+        <div class="lg:col-span-4 space-y-6">
+            <div class="glass-card p-8 shadow-2xl text-center">
+                <div class="w-20 h-20 bg-green-600 rounded-3xl mx-auto flex items-center justify-center shadow-lg mb-4 animate-float">
+                    <i class="fas fa-leaf text-white text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold padi-gradient-text">PadiGuard Pro</h1>
+                <p class="text-gray-500 text-sm font-medium">Malaysia AI Farming Initiative</p>
+                
+                <div class="grid grid-cols-2 gap-4 mt-8">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-50">
+                        <p class="text-2xl font-black text-green-700">98%</p>
+                        <p class="text-[10px] uppercase font-bold text-gray-400">AI Accuracy</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-50">
+                        <p class="text-2xl font-black text-blue-600">32°C</p>
+                        <p class="text-[10px] uppercase font-bold text-gray-400">Current Temp</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 shadow-xl">
+                <h3 class="text-sm font-black text-gray-400 uppercase mb-4 tracking-tighter">Regional Health Trend</h3>
+                <canvas id="healthChart" height="200"></canvas>
+            </div>
         </div>
-        
-        <button onclick="analyzeImage()" id="submitBtn">Analyze Crop Health</button>
-        
-        <div class="loading" id="loading">AI is analyzing your crop, please wait...</div>
-        <div id="result"></div>
+
+        <div class="lg:col-span-8 space-y-6">
+            <div class="glass-card p-8 shadow-2xl relative overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-800">Advanced Field Scanner</h2>
+                    <select id="lang" class="bg-green-100 border-none rounded-full px-6 py-2 text-sm font-bold text-green-800 focus:ring-2 focus:ring-green-500">
+                        <option value="en">English (Expert)</option>
+                        <option value="ms">Bahasa Melayu</option>
+                    </select>
+                </div>
+
+                <div id="dropzone" class="border-4 border-dashed border-green-200 rounded-[2.5rem] p-12 text-center transition-all hover:bg-green-50/50 cursor-pointer mb-8 relative group" onclick="document.getElementById('imageInput').click()">
+                    <div id="uploadUI">
+                        <div class="w-16 h-16 bg-white shadow-md rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-plus text-green-600"></i>
+                        </div>
+                        <p class="text-lg font-bold text-green-800">Snap or Upload Crop Photo</p>
+                        <p class="text-sm text-gray-400">Secure AI Processing</p>
+                    </div>
+                    <img id="preview" src="#" alt="Preview" class="hidden mx-auto rounded-3xl max-h-80 shadow-2xl border-8 border-white">
+                    <input type="file" id="imageInput" class="hidden" accept="image/*" onchange="handleFile(event)">
+                </div>
+
+                <button id="submitBtn" onclick="analyzeImage()" class="w-full bg-green-700 hover:bg-green-800 text-white font-black py-6 rounded-[1.5rem] shadow-xl hover:shadow-green-900/30 transition-all transform active:scale-95 flex items-center justify-center gap-4 text-lg">
+                    <i class="fas fa-sparkles"></i> START AI DIAGNOSIS
+                </button>
+
+                <div id="loading" class="hidden mt-10 text-center py-10">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-700 mb-4"></div>
+                    <p class="text-green-800 font-bold tracking-widest text-sm">SCANNING BIOLOGICAL PATTERNS...</p>
+                </div>
+
+                <div id="resultBox" class="hidden mt-10 bg-white rounded-[2rem] p-8 border-t-8 border-green-600 shadow-inner">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="p-3 bg-red-100 rounded-2xl text-red-600"><i class="fas fa-microscope text-xl"></i></div>
+                        <div>
+                            <h4 class="font-black text-gray-800">AI DIAGNOSTIC REPORT</h4>
+                            <p class="text-xs text-gray-400 font-bold tracking-widest uppercase">Verified by Gemini 1.5</p>
+                        </div>
+                    </div>
+                    <div id="resultContent" class="text-gray-700 leading-relaxed space-y-4"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        // 初始化趋势图 (模拟数据)
+        const ctx = document.getElementById('healthChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Paddy Health Index',
+                    data: [85, 82, 78, 88, 85, 90, 89],
+                    borderColor: '#15803d',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(21, 128, 61, 0.1)'
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+        });
+
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (f) => {
+                    document.getElementById('uploadUI').classList.add('hidden');
+                    const preview = document.getElementById('preview');
+                    preview.src = f.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         async function analyzeImage() {
             const fileInput = document.getElementById('imageInput');
-            const resultDiv = document.getElementById('result');
-            const loading = document.getElementById('loading');
-            const btn = document.getElementById('submitBtn');
+            const lang = document.getElementById('lang').value;
+            if (fileInput.files.length === 0) return alert("Please select a leaf photo!");
 
-            if (fileInput.files.length === 0) {
-                alert("Please select an image first!");
-                return;
-            }
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const resultBox = document.getElementById('resultBox');
+            const resultContent = document.getElementById('resultContent');
+
+            submitBtn.disabled = true;
+            loading.classList.remove('hidden');
+            resultBox.classList.add('hidden');
 
             const formData = new FormData();
             formData.append('padiImage', fileInput.files[0]);
-
-            // 显示加载状态
-            loading.style.display = 'block';
-            resultDiv.style.display = 'none';
-            btn.disabled = true;
+            formData.append('lang', lang);
 
             try {
-                const response = await fetch('/api/diagnose', {
-                    method: 'POST',
-                    body: formData
-                });
+                const response = await fetch('/api/diagnose', { method: 'POST', body: formData });
                 const data = await response.json();
                 
-                loading.style.display = 'none';
-                resultDiv.style.display = 'block';
-                resultDiv.innerText = data.result || data.error;
-                btn.disabled = false;
-            } catch (error) {
-                loading.style.display = 'none';
-                resultDiv.style.display = 'block';
-                resultDiv.innerText = "Error connecting to server.";
-                btn.disabled = false;
+                loading.classList.add('hidden');
+                resultBox.classList.remove('hidden');
+                
+                // 炫酷的内容填充
+                resultContent.innerHTML = `<div class="bg-gray-50 p-6 rounded-2xl border-l-4 border-green-500 text-sm font-medium shadow-sm">
+                    ${data.result.replace(/\n/g, '<br>')}
+                </div>`;
+            } catch (err) {
+                loading.classList.add('hidden');
+                alert("AI Engine is offline. Please check CMD for errors.");
+            } finally {
+                submitBtn.disabled = false;
             }
         }
     </script>
