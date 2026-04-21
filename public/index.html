@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padi-Plates Agent - AI Agriculture Assistant</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; background-color: #f4f7f6; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2e7d32; text-align: center; }
+        .upload-section { border: 2px dashed #4caf50; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+        button { background-color: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background-color: #45a049; }
+        #result { margin-top: 20px; padding: 15px; border-left: 5px solid #2e7d32; background: #e8f5e9; display: none; white-space: pre-wrap; }
+        .loading { display: none; text-align: center; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 Padi-Plates Agent</h1>
+        <p style="text-align: center;">Upload a photo of your rice crop for instant AI diagnosis.</p>
+        
+        <div class="upload-section">
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+        
+        <button onclick="analyzeImage()" id="submitBtn">Analyze Crop Health</button>
+        
+        <div class="loading" id="loading">AI is analyzing your crop, please wait...</div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function analyzeImage() {
+            const fileInput = document.getElementById('imageInput');
+            const resultDiv = document.getElementById('result');
+            const loading = document.getElementById('loading');
+            const btn = document.getElementById('submitBtn');
+
+            if (fileInput.files.length === 0) {
+                alert("Please select an image first!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('padiImage', fileInput.files[0]);
+
+            // 显示加载状态
+            loading.style.display = 'block';
+            resultDiv.style.display = 'none';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/diagnose', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+                resultDiv.style.display = 'block';
+                resultDiv.innerText = data.result || data.error;
+                btn.disabled = false;
+            } catch (error) {
+                loading.style.display = 'none';
+                resultDiv.style.display = 'block';
+                resultDiv.innerText = "Error connecting to server.";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
